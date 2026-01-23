@@ -9,6 +9,12 @@ async function dropEmailIndex() {
     console.log('✅ Connected to MongoDB');
 
     const db = mongoose.connection.db;
+    if (!db) {
+      console.error('❌ Database connection not available');
+      process.exit(1);
+      return;
+    }
+
     const collections = await db.listCollections().toArray();
     
     const userCollection = collections.find((col) => col.name === 'users');

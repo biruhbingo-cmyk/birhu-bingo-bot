@@ -46,10 +46,12 @@ mongoose
     // Drop email index if it exists (from previous schema)
     try {
       const db = mongoose.connection.db;
-      await db.collection('users').dropIndex('email_1').catch(() => {
-        // Index doesn't exist, ignore
-      });
-      console.log('✅ Cleaned up email index');
+      if (db) {
+        await db.collection('users').dropIndex('email_1').catch(() => {
+          // Index doesn't exist, ignore
+        });
+        console.log('✅ Cleaned up email index');
+      }
     } catch (error) {
       // Ignore errors
     }
