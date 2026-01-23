@@ -69,6 +69,15 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Middleware to normalize URLs (remove double slashes)
+app.use((req, res, next) => {
+  // Normalize the URL path by removing multiple consecutive slashes
+  if (req.url.includes('//')) {
+    req.url = req.url.replace(/\/+/g, '/');
+  }
+  next();
+});
+
 // Routes
 app.use('/api/game', gameRoutes);
 app.use('/api/user', userRoutes);
