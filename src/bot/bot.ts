@@ -93,19 +93,35 @@ export function initializeBot(io: Server) {
         return;
       }
 
+      // Normalize phone number (remove + prefix if present, keep it consistent)
+      const phoneNumber = contact.phone_number?.startsWith('+') 
+        ? contact.phone_number 
+        : `+${contact.phone_number}`;
+
+      // Check if phone number already exists
+      const existingPhoneUser = await User.findOne({ phone: phoneNumber });
+      if (existingPhoneUser) {
+        await bot.sendMessage(
+          chatId,
+          '❌ This phone number is already registered with another account.'
+        );
+        return;
+      }
+
       // Create new user
       const referralCode = await generateReferralCode();
       const user = new User({
         telegramId: chatId,
         firstName: contact.first_name || 'User',
         lastName: contact.last_name,
-        phone: contact.phone_number,
+        phone: phoneNumber,
         balance: 5,
         demoGames: 3,
         referralCode,
       });
 
       await user.save();
+      console.log(`✅ User registered successfully: ${user.telegramId} - ${user.firstName} (${user.phone})`);
 
       const successMessage =
         '✅ Registration successful!\n\n' +
@@ -117,8 +133,36 @@ export function initializeBot(io: Server) {
 
       await bot.sendMessage(chatId, successMessage);
     } catch (error: any) {
-      console.error('Registration error:', error);
-      await bot.sendMessage(chatId, '❌ Registration failed. Please try again.');
+      console.error('Registration error details:', {
+        error: error.message,
+        stack: error.stack,
+        code: error.code,
+        keyPattern: error.keyPattern,
+        keyValue: error.keyValue,
+        chatId,
+        contact: contact ? {
+          phone: contact.phone_number,
+          firstName: contact.first_name,
+        } : null,
+      });
+
+      let errorMessage = '❌ Registration failed. Please try again.';
+      
+      // Provide more specific error messages
+      if (error.code === 11000) {
+        // Duplicate key error
+        if (error.keyPattern?.telegramId) {
+          errorMessage = '❌ This Telegram account is already registered.';
+        } else if (error.keyPattern?.phone) {
+          errorMessage = '❌ This phone number is already registered.';
+        } else if (error.keyPattern?.referralCode) {
+          errorMessage = '❌ Referral code conflict. Please try again.';
+        }
+      } else if (error.name === 'ValidationError') {
+        errorMessage = `❌ Validation error: ${Object.values(error.errors).map((e: any) => e.message).join(', ')}`;
+      }
+
+      await bot.sendMessage(chatId, errorMessage);
     }
   });
 
