@@ -83,12 +83,7 @@ export function initializeBot(io: Server) {
       if (existingUser) {
         await bot.sendMessage(
           chatId,
-          '✅ You are already registered!\n\n' +
-          `Name: ${existingUser.firstName}\n` +
-          `Phone: ${existingUser.phone}\n` +
-          `Balance: ${existingUser.balance}\n` +
-          `Demo Games: ${existingUser.demoGames}\n` +
-          `Referral Code: ${existingUser.referralCode}`
+          '❌ You are already registered! Please use /play to start playing.'
         );
         return;
       }
