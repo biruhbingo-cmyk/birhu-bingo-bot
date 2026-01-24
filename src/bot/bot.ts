@@ -18,6 +18,9 @@ export function initializeBot(io: Server) {
 
   bot = new TelegramBot(token, { polling: true });
 
+  // Store pending transfers (simple in-memory store) - defined early so all handlers can access it
+  const pendingTransfers = new Map<number, { receiverReferralCode: string; receiverId: string }>();
+
   // Welcome message with inline keyboard
   bot.onText(/\/start/, async (msg) => {
     const chatId = msg.chat.id;
@@ -270,6 +273,47 @@ export function initializeBot(io: Server) {
     } catch (error) {
       console.error('Transfer command error:', error);
       await bot.sendMessage(chatId, '❌ Error processing transfer request. Please try again.');
+    }
+  });
+
+  // Cancel command - resets bot to initial state (can be used at any time)
+  bot.onText(/\/cancel/, async (msg) => {
+    const chatId = msg.chat.id;
+
+    try {
+      // Clear any pending transfers
+      pendingTransfers.delete(chatId);
+
+      const welcomeText = 'Welcome to Trial Bingo! 🎮';
+      
+      const keyboard = {
+        reply_markup: {
+          inline_keyboard: [
+            [{ text: '📝 Register', callback_data: 'register' }],
+            [{ text: '🎮 Play', callback_data: 'play' }],
+            [{ text: '💰 Deposit', callback_data: 'deposit' }],
+            [{ text: '📢 Join Channel', url: 'https://t.me/your_channel' }],
+            [{ text: '💸 Withdraw', callback_data: 'withdraw' }],
+            [{ text: '🔄 Transfer', callback_data: 'transfer' }],
+          ],
+        },
+      };
+
+      // Send logo image if available, otherwise just text
+      try {
+        const imagePath = path.join(__dirname, '../../asset/Gemini_Generated_Image_pqmjpgpqmjpgpqmj.png');
+        await bot.sendPhoto(chatId, imagePath, {
+          caption: welcomeText,
+          ...keyboard,
+        });
+      } catch (error) {
+        await bot.sendMessage(chatId, welcomeText, keyboard);
+      }
+
+      await bot.sendMessage(chatId, '✅ Operation cancelled. You can start fresh!');
+    } catch (error) {
+      console.error('Cancel command error:', error);
+      await bot.sendMessage(chatId, '❌ Error processing cancel request. Please try again.');
     }
   });
 
@@ -624,9 +668,6 @@ export function initializeBot(io: Server) {
     }
 
   });
-
-  // Store pending transfers (simple in-memory store)
-  const pendingTransfers = new Map<number, { receiverReferralCode: string; receiverId: string }>();
 
   // Enhanced message handler for withdraw and transfer flows
   bot.on('message', async (msg) => {
