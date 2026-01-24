@@ -1,6 +1,7 @@
 import TelegramBot from 'node-telegram-bot-api';
 import { findUserByTelegramId } from '../services/userService';
-import { getContactKeyboard, getPaymentMethodKeyboard, getGameKeyboard } from '../utils/keyboards';
+import { depositService } from '../services/depositService';
+import { getContactKeyboard, getPaymentMethodKeyboard, getGameKeyboard, getForceReplyKeyboard } from '../utils/keyboards';
 import { MESSAGES } from '../utils/messages';
 
 export function setupCallbackHandler(bot: TelegramBot) {
@@ -40,21 +41,31 @@ export function setupCallbackHandler(bot: TelegramBot) {
           break;
 
         case 'deposit_telebirr':
-          await bot.sendMessage(chatId, MESSAGES.TELEBIRR_DETAILS, {
-            reply_markup: {
-              force_reply: true,
-              input_field_placeholder: 'Enter Telebirr Transaction ID',
-            },
+          // Store pending deposit with transaction type
+          depositService.setPendingDeposit(chatId, {
+            amount: 0, // Will be set when user provides amount
+            transactionType: 'Telebirr',
           });
+          // Ask for amount first
+          await bot.sendMessage(
+            chatId,
+            MESSAGES.DEPOSIT_AMOUNT_PROMPT('Telebirr'),
+            getForceReplyKeyboard('Enter amount (50-1000 Birr)')
+          );
           break;
 
         case 'deposit_cbe':
-          await bot.sendMessage(chatId, MESSAGES.CBE_DETAILS, {
-            reply_markup: {
-              force_reply: true,
-              input_field_placeholder: 'Enter CBE Transaction ID',
-            },
+          // Store pending deposit with transaction type
+          depositService.setPendingDeposit(chatId, {
+            amount: 0, // Will be set when user provides amount
+            transactionType: 'CBE',
           });
+          // Ask for amount first
+          await bot.sendMessage(
+            chatId,
+            MESSAGES.DEPOSIT_AMOUNT_PROMPT('CBE'),
+            getForceReplyKeyboard('Enter amount (50-1000 Birr)')
+          );
           break;
 
         case 'withdraw':

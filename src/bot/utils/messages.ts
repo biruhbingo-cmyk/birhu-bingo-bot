@@ -15,7 +15,15 @@ export const MESSAGES = {
   OPERATION_CANCELLED: '✅ Operation cancelled. You can start fresh!',
   GAME_PROMPT: '🎮 Choose your game mode!',
   PAYMENT_METHOD_PROMPT: 'እባክዎ የሚጠቀሙትን የክፍያ እማራጭ ይምረጡ (Telebirr ወይም Commercial Bank of Ethiopia)',
-  TELEBIRR_DETAILS: `📅 እባክዎ የደረሶትን Transaction ID ያስገቡ
+  DEPOSIT_AMOUNT_PROMPT: (transactionType: string) =>
+    `💰 እባክዎ ምን ያህል መጠቀም ይፈልጋሉ?\n\n` +
+    `Payment Method: ${transactionType}\n\n` +
+    `ከፍተኛ ማስገባት የሚቻለው = 1000 Birr\n` +
+    `ትንሹ ማስገባት ሚቻለው = 50 Birr\n\n` +
+    `እባክዎ የክፍያ መጠን ያስገቡ:`,
+  TELEBIRR_DETAILS: (amount: number) => `📅 እባክዎ የደረሶትን Transaction ID ያስገቡ
+
+Amount: ${amount} Birr
 
 (Example:- Telebirr: CDF8QQMTVE)
 
@@ -23,11 +31,10 @@ export const MESSAGES = {
 
 👉 ቁጥሮቹን Copy ለማድረግ እባኮትን የፅሁፍ አካላቸውን ያጫኑ።
 
-ከፍተኛ ማስገባት የሚቻለው = 1000 Birr
-ትንሹ ማስገባት ሚቻለው = 50 Birr
-
 📱 እባክዎ የቴሌብር Transaction ID ያስገቡ:`,
-  CBE_DETAILS: `📅 እባክዎ የደረሶትን Transaction ID ያስገቡ
+  CBE_DETAILS: (amount: number) => `📅 እባክዎ የደረሶትን Transaction ID ያስገቡ
+
+Amount: ${amount} Birr
 
 (Example:- CBE(Bank): FT25106S48WP)
 
@@ -35,20 +42,20 @@ export const MESSAGES = {
 
 👉 ቁጥሮቹን Copy ለማድረግ እባኮትን የፅሁፍ አካላቸውን ያጫኑ።
 
-ከፍተኛ ማስገባት የሚቻለው = 1000 Birr
-ትንሹ ማስገባት ሚቻለው = 50 Birr
-
 🏦 እባክዎ የCBE Transaction ID ያስገቡ:`,
-  TELEBIRR_TRANSACTION_RECEIVED: (transactionId: string) =>
+  TELEBIRR_TRANSACTION_RECEIVED: (amount: number, transactionId: string) =>
     `✅ የቴሌብር Transaction ID ተቀብሏል!\n\n` +
+    `Amount: ${amount} Birr\n` +
     `Transaction ID: ${transactionId}\n\n` +
     `እባክዎ ይጠብቁ... የእርስዎ ክፍያ እየተፈተሸ ነው።\n\n` +
     `የክፍያዎ ከተፈተሸ በኋላ ወደ ሂሳብዎ ይጨመራል።`,
-  CBE_TRANSACTION_RECEIVED: (transactionId: string) =>
+  CBE_TRANSACTION_RECEIVED: (amount: number, transactionId: string) =>
     `✅ የCBE Transaction ID ተቀብሏል!\n\n` +
+    `Amount: ${amount} Birr\n` +
     `Transaction ID: ${transactionId}\n\n` +
     `እባክዎ ይጠብቁ... የእርስዎ ክፍያ እየተፈተሸ ነው።\n\n` +
     `የክፍያዎ ከተፈተሸ በኋላ ወደ ሂሳብዎ ይጨመራል።`,
+  DEPOSIT_SESSION_EXPIRED: '❌ Deposit session expired. Please start over.',
   WITHDRAW_BALANCE_PROMPT: (balance: number) =>
     `💰 የእርስዎ የአሁኑ ሂሳብ: ${balance} Birr\n\n` +
     `እባክዎ ምን ያህል መልሶ ማውጣት ይፈልጋሉ?`,

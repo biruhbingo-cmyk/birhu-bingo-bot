@@ -1,6 +1,7 @@
 import TelegramBot from 'node-telegram-bot-api';
 import path from 'path';
 import { transferService } from '../services/transferService';
+import { depositService } from '../services/depositService';
 import { getMainMenuKeyboard } from '../utils/keyboards';
 import { MESSAGES } from '../utils/messages';
 
@@ -10,6 +11,7 @@ export function setupCancelHandler(bot: TelegramBot) {
 
     try {
       transferService.clearPendingTransfer(chatId);
+      depositService.clearPendingDeposit(chatId);
 
       const welcomeText = MESSAGES.WELCOME;
       const keyboard = getMainMenuKeyboard();
