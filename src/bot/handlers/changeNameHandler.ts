@@ -37,7 +37,14 @@ export function setupChangeNameHandler(bot: TelegramBot) {
     const text = msg.text;
     const replyToMessage = msg.reply_to_message;
 
-    if (!text || !replyToMessage || text.startsWith('/')) {
+    if (!text || !replyToMessage) {
+      return;
+    }
+
+    // Allow /skip command for last name, but block other commands
+    const textLower = text.trim().toLowerCase();
+    const isSkipCommand = textLower === '/skip' || textLower === 'skip';
+    if (text.startsWith('/') && !isSkipCommand) {
       return;
     }
 
@@ -106,7 +113,10 @@ export function setupChangeNameHandler(bot: TelegramBot) {
         const textLower = text.trim().toLowerCase();
         
         // Check if user wants to skip last name
-        if (textLower !== '/skip' && textLower !== 'skip') {
+        // Allow both /skip and skip (without slash)
+        if (textLower === '/skip' || textLower === 'skip') {
+          lastName = undefined; // Explicitly set to undefined when skipping
+        } else {
           lastName = text.trim();
           // Allow empty last name
           if (lastName.length === 0) {
