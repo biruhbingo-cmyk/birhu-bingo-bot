@@ -1,5 +1,4 @@
 import TelegramBot from 'node-telegram-bot-api';
-import { Server } from 'socket.io';
 import dotenv from 'dotenv';
 
 // Handlers
@@ -17,7 +16,7 @@ dotenv.config();
 
 let bot: TelegramBot;
 
-export async function initializeBot(io: Server) {
+export async function initializeBot() {
   const token = process.env.TELEGRAM_BOT_TOKEN;
   if (!token) {
     throw new Error('TELEGRAM_BOT_TOKEN is not set');
