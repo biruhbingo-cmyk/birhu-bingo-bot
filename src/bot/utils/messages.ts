@@ -1,5 +1,8 @@
+// Project name constant
+export const PROJECT_NAME = 'Name';
+
 export const MESSAGES = {
-  WELCOME: 'Welcome to Trial Bingo! 🎮',
+  WELCOME: `Welcome to ${PROJECT_NAME} Bingo! 🎮`,
   REGISTER_PROMPT: 'Please share your contact information to register.',
   ALREADY_REGISTERED: '❌ You are already registered! Please use /play to start playing.',
   PHONE_ALREADY_REGISTERED: '❌ This phone number is already registered with another account.',
