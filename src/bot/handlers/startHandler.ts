@@ -10,7 +10,7 @@ export function setupStartHandler(bot: TelegramBot) {
     const keyboard = getMainMenuKeyboard();
 
     try {
-      const imagePath = path.join(__dirname, '../../../asset/Gemini_Generated_Image_pqmjpgpqmjpgpqmj.png');
+      const imagePath = path.join(__dirname, '../../../asset/bingo.png');
       await bot.sendPhoto(chatId, imagePath, {
         caption: welcomeText,
         ...keyboard,
