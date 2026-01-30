@@ -142,6 +142,20 @@ export const MESSAGES = {
     item += `   Date: ${date}\n`;
     return item;
   },
+  GAME_ITEM: (index: number, gameType: string, betAmount: number, cardId: number, state: string, isWinner: boolean, isEliminated: boolean, finishedAt: string | null) => {
+    let item = `${index}. Game: ${gameType} | Bet: ${betAmount} Birr\n`;
+    item += `   Card ID: ${cardId}\n`;
+    item += `   Status: ${state}\n`;
+    if (isWinner) {
+      item += `   🏆 Winner!\n`;
+    } else if (isEliminated) {
+      item += `   ❌ Eliminated\n`;
+    }
+    if (finishedAt) {
+      item += `   Finished: ${finishedAt}\n`;
+    }
+    return item;
+  },
   SUPPORT_MESSAGE: 'እባክዎን ከዚህ በታች ያሉትን ቁልፎች በመጫን መረጃ እና ድጋፍ ማግኘት ይችላሉ።',
 };
 

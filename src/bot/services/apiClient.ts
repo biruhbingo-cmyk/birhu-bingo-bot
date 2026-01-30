@@ -323,6 +323,20 @@ class ApiClient {
       throw error;
     }
   }
+
+  // Game History Endpoint
+  async getGameHistory(userId: string, limit: number = 10, offset: number = 0): Promise<{ games: any[]; count: number; limit: number; offset: number }> {
+    try {
+      return await this.request<{ games: any[]; count: number; limit: number; offset: number }>(
+        `/api/v1/games/user/${userId}/history?limit=${limit}&offset=${offset}`
+      );
+    } catch (error: any) {
+      if (error.message?.includes('404') || error.message?.includes('not found')) {
+        return { games: [], count: 0, limit, offset };
+      }
+      throw error;
+    }
+  }
 }
 
 export const apiClient = new ApiClient();

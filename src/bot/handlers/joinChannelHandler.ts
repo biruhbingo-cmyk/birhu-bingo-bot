@@ -10,7 +10,7 @@ export function setupJoinChannelHandler(bot: TelegramBot) {
       const channelUsername = process.env.CHANNEL_USERNAME || 'your_channel';
       const keyboard = getJoinChannelKeyboard(channelUsername);
       
-      await bot.sendMessage(chatId, MESSAGES.JOIN_CHANNEL_LINK(channelUsername.replace(/^@/, '')), keyboard);
+      await bot.sendMessage(chatId, '📢 Join our channel:', keyboard);
     } catch (error) {
       console.error('Join channel error:', error);
       await bot.sendMessage(chatId, '❌ Error opening channel. Please try again.');

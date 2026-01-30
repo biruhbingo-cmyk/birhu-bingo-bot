@@ -158,9 +158,32 @@ export function setupGameHistoryHandler(bot: TelegramBot) {
         return;
       }
 
-      // Note: Game history endpoint is not available in the API docs
-      // This is a placeholder implementation
-      await bot.sendMessage(chatId, MESSAGES.NO_GAME_HISTORY);
+      const history = await apiClient.getGameHistory(user._id, 10, 0);
+      
+      if (history.count === 0) {
+        await bot.sendMessage(chatId, MESSAGES.NO_GAME_HISTORY);
+        return;
+      }
+
+      let message = MESSAGES.GAME_HISTORY_HEADER;
+      history.games.forEach((gameEntry, index) => {
+        const game = gameEntry.game;
+        const finishedDate = game.finished_at ? formatDate(game.finished_at) : 'N/A';
+        
+        message += MESSAGES.GAME_ITEM(
+          index + 1,
+          game.game_type,
+          game.bet_amount,
+          gameEntry.card_id,
+          game.state,
+          gameEntry.is_winner,
+          gameEntry.is_eliminated,
+          finishedDate
+        );
+        message += '\n';
+      });
+
+      await bot.sendMessage(chatId, message);
     } catch (error) {
       console.error('Game history error:', error);
       await bot.sendMessage(chatId, '❌ Error fetching game history. Please try again.');
