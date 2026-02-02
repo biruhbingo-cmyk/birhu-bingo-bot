@@ -33,7 +33,16 @@ export async function initializeBot() {
     throw new Error('TELEGRAM_BOT_TOKEN is not set');
   }
 
-  bot = new TelegramBot(token, { polling: true });
+  // Use webhook mode in production (Vercel), polling mode in development
+  const useWebhook = process.env.VERCEL === '1' || process.env.USE_WEBHOOK === '1';
+  
+  if (useWebhook) {
+    // Webhook mode for Vercel
+    bot = new TelegramBot(token);
+  } else {
+    // Polling mode for local development
+    bot = new TelegramBot(token, { polling: true });
+  }
 
   // Set bot commands menu
   await bot.setMyCommands([
@@ -75,8 +84,15 @@ export async function initializeBot() {
   setupTransferHistoryHandler(bot);
   setupGameHistoryHandler(bot);
 
-  console.log('✅ Telegram bot initialized');
+  console.log(`✅ Telegram bot initialized (mode: ${useWebhook ? 'webhook' : 'polling'})`);
   return bot;
+}
+
+// Initialize bot immediately when imported (for Vercel serverless functions)
+if (process.env.VERCEL === '1' || process.env.USE_WEBHOOK === '1') {
+  initializeBot().catch((error) => {
+    console.error('❌ Failed to initialize bot:', error);
+  });
 }
 
 export function getBot(): TelegramBot {
