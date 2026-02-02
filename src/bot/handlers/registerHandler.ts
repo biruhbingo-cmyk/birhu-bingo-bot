@@ -72,7 +72,9 @@ export function setupRegisterHandler(bot: TelegramBot) {
       // Handle API errors
       if (error.message) {
         const errorMsg = error.message.toLowerCase();
-        if (errorMsg.includes('already registered') || errorMsg.includes('duplicate') || errorMsg.includes('exists')) {
+        if (errorMsg.includes('429') || errorMsg.includes('too many requests')) {
+          errorMessage = '⏳ Server is busy. Please wait a moment and try again.';
+        } else if (errorMsg.includes('already registered') || errorMsg.includes('duplicate') || errorMsg.includes('exists')) {
           if (errorMsg.includes('telegram')) {
             errorMessage = '❌ This Telegram account is already registered.';
           } else if (errorMsg.includes('phone')) {

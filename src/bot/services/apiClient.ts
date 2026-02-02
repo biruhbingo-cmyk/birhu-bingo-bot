@@ -128,9 +128,12 @@ class ApiClient {
 
   private async request<T>(
     endpoint: string,
-    options: RequestInit = {}
+    options: RequestInit = {},
+    retryCount = 0
   ): Promise<T> {
     const url = `${this.baseUrl}${endpoint}`;
+    const maxRetries = 3;
+    const baseDelay = 1000; // 1 second
     
     try {
       const response = await fetch(url, {
@@ -140,6 +143,18 @@ class ApiClient {
           ...options.headers,
         },
       });
+
+      // Handle 429 Too Many Requests with retry
+      if (response.status === 429 && retryCount < maxRetries) {
+        const retryAfter = response.headers.get('Retry-After');
+        const delay = retryAfter 
+          ? parseInt(retryAfter) * 1000 
+          : baseDelay * Math.pow(2, retryCount); // Exponential backoff
+        
+        console.warn(`Rate limited (429). Retrying in ${delay}ms... (attempt ${retryCount + 1}/${maxRetries})`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+        return this.request<T>(endpoint, options, retryCount + 1);
+      }
 
       if (!response.ok) {
         let errorData: ErrorResponse;
