@@ -61,11 +61,23 @@ export const MESSAGES = {
     `Balance: ${balance} Birr`,
   WITHDRAW_BALANCE_PROMPT: (balance: number) =>
     `💰 የእርስዎ የአሁኑ ሂሳብ: ${balance} Birr\n\n` +
-    `ምን ያህል  ማውጣት ይፈልጋሉ?`,
+    `ምን ያህል  ማውጣት ይፈልጋሉ?\n\n` +
+    `⚠️ Minimum withdrawal: 50 Birr\n` +
+    `⚠️ You must leave at least 10 Birr in your account`,
+  WITHDRAW_ACCOUNT_TYPE_PROMPT: (amount: number) =>
+    `Amount: ${amount} Birr\n\n` +
+    `እባክዎ የክፍያ እማራጭ ይምረጡ (Telebirr ወይም CBE):`,
+  WITHDRAW_ACCOUNT_NUMBER_PROMPT: (amount: number, accountType: string) =>
+    `Amount: ${amount} Birr\n` +
+    `Payment Method: ${accountType}\n\n` +
+    `እባክዎ የእርስዎን የ${accountType} Account Number ያስገቡ:`,
   WITHDRAW_SUCCESS: (amount: number, newBalance: number) =>
     `Amount withdrawn: ${amount} Birr\n` +
     `New balance: ${newBalance} Birr\n\n` +
     `የመውጫ ክፍያዎ እየተፀደቀ ነው፤ እባክዎ ይጠብቁ።`,
+  WITHDRAW_SESSION_EXPIRED: '❌ Withdrawal session expired. Please start over.',
+  INVALID_ACCOUNT_TYPE: '❌ Invalid account type. Please select Telebirr or CBE.',
+  INVALID_ACCOUNT_NUMBER: '❌ Invalid account number. Please enter a valid account number.',
   TRANSFER_REFERRAL_PROMPT: (balance: number) =>
     `💰 የእርስዎ የአሁኑ ሂሳብ: ${balance} Birr\n\n` +
     `እባክዎ ለማስተላለፍ የሚፈልጉትን የተጠቃሚ Referral Code ያስገቡ:`,

@@ -68,3 +68,5 @@ Make sure these are set in Render:
 - ✅ User-friendly error messages for rate limits
 - ✅ No more "No open ports detected" warning
 
+
+

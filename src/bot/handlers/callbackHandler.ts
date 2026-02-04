@@ -1,6 +1,7 @@
 import TelegramBot from 'node-telegram-bot-api';
 import { findUserByTelegramId } from '../services/userService';
 import { depositService } from '../services/depositService';
+import { withdrawService } from '../services/withdrawService';
 import { getContactKeyboard, getPaymentMethodKeyboard, getGameKeyboard, getForceReplyKeyboard } from '../utils/keyboards';
 import { MESSAGES } from '../utils/messages';
 import { DEPOSIT_CONFIG } from '../config/depositConfig';
@@ -78,12 +79,41 @@ export function setupCallbackHandler(bot: TelegramBot) {
           await bot.sendMessage(
             chatId,
             MESSAGES.WITHDRAW_BALANCE_PROMPT(withdrawUser.balance),
-            {
-              reply_markup: {
-                force_reply: true,
-                input_field_placeholder: 'Enter amount to withdraw (e.g., 100)',
-              },
-            }
+            getForceReplyKeyboard('Enter amount to withdraw (minimum 50 Birr)')
+          );
+          break;
+
+        case 'withdraw_telebirr':
+          const pendingWithdrawTelebirr = withdrawService.getPendingWithdraw(chatId);
+          if (!pendingWithdrawTelebirr || !pendingWithdrawTelebirr.amount) {
+            await bot.sendMessage(chatId, MESSAGES.WITHDRAW_SESSION_EXPIRED);
+            return;
+          }
+          withdrawService.setPendingWithdraw(chatId, {
+            amount: pendingWithdrawTelebirr.amount,
+            accountType: 'Telebirr',
+          });
+          await bot.sendMessage(
+            chatId,
+            MESSAGES.WITHDRAW_ACCOUNT_NUMBER_PROMPT(pendingWithdrawTelebirr.amount, 'Telebirr'),
+            getForceReplyKeyboard('Enter your Telebirr account number')
+          );
+          break;
+
+        case 'withdraw_cbe':
+          const pendingWithdrawCbe = withdrawService.getPendingWithdraw(chatId);
+          if (!pendingWithdrawCbe || !pendingWithdrawCbe.amount) {
+            await bot.sendMessage(chatId, MESSAGES.WITHDRAW_SESSION_EXPIRED);
+            return;
+          }
+          withdrawService.setPendingWithdraw(chatId, {
+            amount: pendingWithdrawCbe.amount,
+            accountType: 'CBE',
+          });
+          await bot.sendMessage(
+            chatId,
+            MESSAGES.WITHDRAW_ACCOUNT_NUMBER_PROMPT(pendingWithdrawCbe.amount, 'CBE'),
+            getForceReplyKeyboard('Enter your CBE account number')
           );
           break;
 

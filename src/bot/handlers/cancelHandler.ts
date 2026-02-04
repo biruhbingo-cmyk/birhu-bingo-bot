@@ -3,6 +3,7 @@ import path from 'path';
 import { transferService } from '../services/transferService';
 import { depositService } from '../services/depositService';
 import { changeNameService } from '../services/changeNameService';
+import { withdrawService } from '../services/withdrawService';
 import { getMainMenuKeyboard } from '../utils/keyboards';
 import { MESSAGES } from '../utils/messages';
 
@@ -14,6 +15,7 @@ export function setupCancelHandler(bot: TelegramBot) {
       transferService.clearPendingTransfer(chatId);
       depositService.clearPendingDeposit(chatId);
       changeNameService.clearPendingNameChange(chatId);
+      withdrawService.clearPendingWithdraw(chatId);
 
       const welcomeText = MESSAGES.WELCOME;
       // Get channel username from environment variable

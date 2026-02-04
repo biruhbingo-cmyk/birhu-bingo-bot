@@ -144,3 +144,20 @@ export const getInstructionKeyboard = (instructionUrl: string): SendMessageOptio
   };
 };
 
+export const getWithdrawAccountTypeKeyboard = (): SendMessageOptions => ({
+  reply_markup: {
+    inline_keyboard: [
+      [
+        {
+          text: '📱 Telebirr',
+          callback_data: 'withdraw_telebirr',
+        },
+        {
+          text: '🏦 CBE',
+          callback_data: 'withdraw_cbe',
+        },
+      ],
+    ],
+  },
+});
+

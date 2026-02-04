@@ -64,6 +64,8 @@ interface DepositResponse {
 interface WithdrawRequest {
   user_id: string;
   amount: number;
+  account_number: string;
+  account_type: 'Telebirr' | 'CBE';
 }
 
 interface WithdrawResponse {

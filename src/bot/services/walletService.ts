@@ -64,11 +64,15 @@ export async function createDeposit(
 
 export async function createWithdraw(
   userId: string,
-  amount: number
+  amount: number,
+  accountNumber: string,
+  accountType: 'Telebirr' | 'CBE'
 ): Promise<{ transactionId: string; status: string; newBalance: number }> {
   const response = await apiClient.createWithdraw({
     user_id: userId,
     amount,
+    account_number: accountNumber,
+    account_type: accountType,
   });
   
   // Fetch updated wallet to get new balance
