@@ -78,6 +78,8 @@ export const MESSAGES = {
   WITHDRAW_SESSION_EXPIRED: '❌ Withdrawal session expired. Please start over.',
   INVALID_ACCOUNT_TYPE: '❌ Invalid account type. Please select Telebirr or CBE.',
   INVALID_ACCOUNT_NUMBER: '❌ Invalid account number. Please enter a valid account number.',
+  NO_DEPOSIT_REQUIRED_FOR_WITHDRAW: '❌ You must make at least one deposit before you can withdraw.\n\n' +
+    'Please use /deposit to make a deposit first.',
   TRANSFER_REFERRAL_PROMPT: (balance: number) =>
     `💰 የእርስዎ የአሁኑ ሂሳብ: ${balance} Birr\n\n` +
     `እባክዎ ለማስተላለፍ የሚፈልጉትን የተጠቃሚ Referral Code ያስገቡ:`,

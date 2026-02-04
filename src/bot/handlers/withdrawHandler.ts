@@ -2,6 +2,7 @@ import TelegramBot from 'node-telegram-bot-api';
 import { findUserByTelegramId } from '../services/userService';
 import { createWithdraw } from '../services/walletService';
 import { withdrawService } from '../services/withdrawService';
+import { apiClient } from '../services/apiClient';
 import { getForceReplyKeyboard, getWithdrawAccountTypeKeyboard } from '../utils/keyboards';
 import { MESSAGES } from '../utils/messages';
 import { validateWithdrawAmount, validateAccountNumber } from '../utils/validators';
@@ -15,6 +16,13 @@ export function setupWithdrawHandler(bot: TelegramBot) {
       const user = await findUserByTelegramId(chatId);
       if (!user) {
         await bot.sendMessage(chatId, MESSAGES.NOT_REGISTERED);
+        return;
+      }
+
+      // Check if user has made at least one deposit
+      const depositHistory = await apiClient.getDepositHistory(user._id);
+      if (depositHistory.count === 0) {
+        await bot.sendMessage(chatId, MESSAGES.NO_DEPOSIT_REQUIRED_FOR_WITHDRAW);
         return;
       }
 
