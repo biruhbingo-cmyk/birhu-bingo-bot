@@ -67,7 +67,7 @@ export function setupInstructionHandler(bot: TelegramBot) {
       
       const keyboard = getInstructionKeyboard(instructionUrl);
       
-      await bot.sendMessage(chatId, '', keyboard);
+      await bot.sendMessage(chatId, '📖 Click the button below to view instructions:', keyboard);
     } catch (error: any) {
       console.error('Instruction error:', error);
       console.error('Error details:', {
