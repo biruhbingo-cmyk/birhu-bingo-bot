@@ -7,13 +7,33 @@ export function setupInstructionHandler(bot: TelegramBot) {
     const chatId = msg.chat.id;
 
     try {
-      const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3001';
+      // Get frontend URL from environment or use default
+      let frontendUrl = process.env.FRONTEND_URL || 'https://biruh-bingo-frontend-production.up.railway.app';
+      
+      // Ensure HTTPS is used (Telegram web_app requires HTTPS)
+      if (frontendUrl.startsWith('http://')) {
+        frontendUrl = frontendUrl.replace('http://', 'https://');
+      } else if (!frontendUrl.startsWith('https://')) {
+        frontendUrl = `https://${frontendUrl}`;
+      }
+      
+      // Remove trailing slash if present
+      frontendUrl = frontendUrl.replace(/\/$/, '');
+      
       const instructionUrl = `${frontendUrl}/instruction`;
+      
+      console.log('Instruction URL:', instructionUrl); // Debug log
+      
       const keyboard = getInstructionKeyboard(instructionUrl);
       
       await bot.sendMessage(chatId, '', keyboard);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Instruction error:', error);
+      console.error('Error details:', {
+        message: error?.message,
+        stack: error?.stack,
+        response: error?.response?.data,
+      });
       await bot.sendMessage(chatId, '❌ Error opening instructions. Please try again.');
     }
   });

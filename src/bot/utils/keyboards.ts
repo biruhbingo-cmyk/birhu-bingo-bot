@@ -36,9 +36,9 @@ export const getMainMenuKeyboard = (channelUsername?: string): SendMessageOption
   }
 
   return {
-    reply_markup: {
+  reply_markup: {
       inline_keyboard: buttons,
-    },
+  },
   };
 };
 

@@ -41,7 +41,7 @@ export async function initializeBot() {
     bot = new TelegramBot(token);
   } else {
     // Polling mode for local development
-    bot = new TelegramBot(token, { polling: true });
+  bot = new TelegramBot(token, { polling: true });
   }
 
   // Set bot commands menu
