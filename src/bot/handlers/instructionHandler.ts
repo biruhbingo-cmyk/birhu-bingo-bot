@@ -76,8 +76,7 @@ export function setupInstructionHandler(bot: TelegramBot) {
         response: error?.response?.data,
       });
       
-      const errorMessage = `❌ Error opening instructions. Please try again.\n\n🔗 URL: ${instructionUrl || 'Not generated'}\n\nError: ${error?.message || 'Unknown error'}`;
-      await bot.sendMessage(chatId, errorMessage);
+      await bot.sendMessage(chatId, '❌ Error opening instructions. Please try again.');
     }
   });
 }
